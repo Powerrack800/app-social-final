@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/txtDatos"
+        android:layout_width="338dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="91dp"
+        android:ems="10"
+        android:maxLength="40"
+        android:singleLine="true"
+        android:text="datos"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtDescripcion"
+        android:layout_width="336dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="125dp"
+        android:hint="Ingresar descripcion"
+        android:inputType="text|textMultiLine"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageProfile"
+        android:layout_width="186dp"
+        android:layout_height="99dp"
+        android:layout_marginTop="188dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.133"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/problema" />
+
+    <Spinner
+        android:id="@+id/spinner3"
+        android:layout_width="167dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="208dp"
+        android:layout_marginEnd="20dp"
+        android:entries="@array/problemas"
+
+        android:layout_marginBottom="648dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinner4"
+        android:layout_width="167dp"
+        android:layout_height="44dp"
+        android:entries="@array/cp"
+        android:layout_marginEnd="186dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnCodigo3"
+        android:layout_width="237dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="300dp"
+        android:backgroundTint="@color/primary"
+        android:text="Subir Foto"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnCodigo4"
+        android:layout_width="237dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="372dp"
+        android:backgroundTint="@color/purple_500"
+        android:text="Publicar"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

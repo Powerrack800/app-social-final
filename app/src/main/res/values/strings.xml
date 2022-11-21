@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">app-social-final</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="datos_spinner">
+        <item>Fecha</item>
+        <item>Codigo postal</item>
+    </string-array>
+
+    <string-array name="cp">
+        <item>CP</item>
+        <item>94285</item>
+        <item>94286</item>
+        <item>94287</item>
+        <item>94288</item>
+        <item>94289</item>
+        <item>94290</item>
+        <item>94291</item>
+        <item>94292</item>
+        <item>94293</item>
+        <item>94294</item>
+        <item>94295</item>
+        <item>94296</item>
+        <item>94297</item>
+        <item>94298</item>
+        <item>94299</item>
+    </string-array>
+
+    <string-array name="problemas">
+        <item>Tipo de incidente</item>
+        <item>Bache</item>
+        <item>Fuga de agua</item>
+        <item>Calle cerrada </item>
+        <item>Accidente</item>
+    </string-array>
+</resources>
