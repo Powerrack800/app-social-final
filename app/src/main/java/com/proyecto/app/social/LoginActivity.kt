@@ -11,12 +11,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.google.gson.JsonObject
 import org.json.JSONObject
 
 
 class LoginActivity : AppCompatActivity() {
-//ip
     var loginUrl = "http://10.0.2.2:8080/app-api-identidad/api/identidad/sesion/iniciar"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,13 +22,19 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         val recoverPassword  = findViewById(R.id.textView) as TextView
-        val loginBtn = findViewById(R.id.btnCodigo) as Button
+        val loginBtn = findViewById(R.id.btnChange) as Button
         val register = findViewById(R.id.textView2) as TextView
         val userTxt = findViewById(R.id.editEmail) as TextView
         val passwordTxt = findViewById(R.id.password) as TextView
+        val changePassword = findViewById(R.id.textView13) as TextView
 
         recoverPassword.setOnClickListener{
             val changePage = Intent(this, RecoverPasswordActivity::class.java)
+            startActivity(changePage)
+        }
+
+        changePassword.setOnClickListener{
+            val changePage = Intent(this, ChangePasswordActivity::class.java)
             startActivity(changePage)
         }
 

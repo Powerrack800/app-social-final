@@ -49,7 +49,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btnCodigo"
+        android:id="@+id/btnChange"
         android:layout_width="199dp"
         android:layout_height="43dp"
         android:layout_marginStart="106dp"

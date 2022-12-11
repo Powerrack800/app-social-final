@@ -56,7 +56,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btnCodigo"
+        android:id="@+id/btnChange"
         android:layout_width="184dp"
         android:layout_height="45dp"
         android:layout_marginStart="218dp"
@@ -112,7 +112,7 @@
         android:layout_marginEnd="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCodigo" />
+        app:layout_constraintTop_toBottomOf="@+id/btnChange" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

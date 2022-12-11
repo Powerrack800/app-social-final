@@ -5,7 +5,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ListView
 import android.widget.Toast
 import com.android.volley.Response
@@ -16,12 +18,20 @@ import org.json.JSONObject
 class ProfileActivity : AppCompatActivity() {
 
     var logoutUrl = "http://10.0.2.2:8080/app-api-identidad/api/identidad/sesion/cerrar"
+    var profileUrl = "http://10.0.2.2:8080/app-api-identidad/api/identidad/usuario/info/obtener"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
 
         val btnCloseSesion = findViewById(R.id.btnCodigo5) as Button
+        val editName = findViewById(R.id.editName) as EditText
+        val editCp = findViewById(R.id.editCodigoPostal) as EditText
+        val editEmail = findViewById(R.id.editEmailProfile) as EditText
+        getProfile(getToken(), editName, editCp,editEmail)
+
 
         var arraylist = ArrayList<Publicacion>();
         arraylist.add(Publicacion("Jose Manuel Velazques","Hace 5 horas","94285","Bache","Más de una semana sin agua en las unidad CTM Culhuacan Zona VI Coyoacan, Calle Manuela Cañizares  y mas texto de pruebas...","",true))
@@ -29,10 +39,41 @@ class ProfileActivity : AppCompatActivity() {
         val publicacionAdapter: PublicacionAdapter = PublicacionAdapter(applicationContext,arraylist)
         mListView.adapter = publicacionAdapter
 
-
         btnCloseSesion.setOnClickListener{
             cerrarSesion(getToken())
         }
+    }
+
+    private fun getProfile(token: String, editName: EditText, editCp: EditText, editEmail: EditText){
+        val queue = Volley.newRequestQueue(this@ProfileActivity)
+        val stringReq : StringRequest =
+            object : StringRequest(
+                Method.GET, profileUrl,
+                Response.Listener { response ->
+                    val json = JSONObject(response)
+                    val profile = json["entidad"].toString()
+                    val profileJSON = JSONObject(profile);
+                    val usuario: String = profileJSON["usuario"].toString()
+                    val email: String = profileJSON["correo"].toString()
+                    val cp: String = profileJSON["idCodigoPostal"].toString()
+
+                    editName?.setText(usuario)
+                    editCp?.setText(cp)
+                    editEmail?.setText(email)
+                    Log.e("GET_USER",response.toString())
+                },
+                Response.ErrorListener { error ->
+                    Log.e("GET_USER", error.networkResponse.toString())
+                }
+            ){
+                override fun getHeaders(): MutableMap<String, String> {
+                    val headers = HashMap<String, String>()
+                    headers["SEATY-APP-TOKEN"] = token
+                    headers["Content-Type"] = "application/json"
+                    return headers
+                }
+            }
+        queue.add(stringReq)
     }
 
     private fun cerrarSesion(token: String) {

@@ -1,8 +1,8 @@
 package com.proyecto.app.social
 
-import android.R.attr.button
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +16,8 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
 
         val btnNotification = findViewById(R.id.button3) as Button
         btnNotification.setOnClickListener{
@@ -29,7 +31,7 @@ class HomeActivity : AppCompatActivity() {
             startActivity(changePage)
         }
 
-        val btnPublish = findViewById(R.id.btnCodigo) as Button
+        val btnPublish = findViewById(R.id.btnChange) as Button
         btnPublish.setOnClickListener{
             val changePage = Intent(this, PublicarActivity::class.java)
             startActivity(changePage)

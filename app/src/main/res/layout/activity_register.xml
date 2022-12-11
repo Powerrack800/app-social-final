@@ -39,7 +39,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btnCodigo"
+        android:id="@+id/btnChange"
         android:layout_width="237dp"
         android:layout_height="58dp"
         android:layout_marginTop="489dp"
@@ -176,7 +176,7 @@
         android:id="@+id/textCheckbox"
         android:layout_width="262dp"
         android:layout_height="46dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnCodigo"
+        app:layout_constraintBottom_toTopOf="@+id/btnChange"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.583"
         app:layout_constraintStart_toStartOf="parent"
