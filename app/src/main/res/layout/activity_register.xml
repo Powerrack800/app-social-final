@@ -10,6 +10,19 @@
     tools:layout_editor_absoluteY="-124dp">
 
 
+    <Spinner
+        android:id="@+id/spinner8"
+        android:layout_width="314dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="236dp"
+        android:layout_marginEnd="49dp"
+        android:layout_marginBottom="441dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/editEmail5"
         android:layout_width="309dp"
@@ -18,20 +31,6 @@
         android:layout_marginBottom="369dp"
         android:ems="10"
         android:hint="Escribe tu nombre de usuario"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/editEmail6"
-        android:layout_width="309dp"
-        android:layout_height="49dp"
-        android:layout_marginTop="237dp"
-        android:layout_marginBottom="445dp"
-        android:ems="10"
-        android:hint="Escribe tu codigo postal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

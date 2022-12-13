@@ -17,6 +17,7 @@ import org.json.JSONObject
 class LoginActivity : AppCompatActivity() {
     var loginUrl = "http://10.0.2.2:8080/app-api-identidad/api/identidad/sesion/iniciar"
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
