@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -19,6 +20,7 @@ class ProfileActivity : AppCompatActivity() {
     var profileUrl = "http://10.0.2.2:8080/app-api-identidad/api/identidad/usuario/info/obtener"
     var profileUpdateUrl ="http://10.0.2.2:8080/app-api-identidad/api/identidad/usuario/"
     val codigosPostalesURL = "http://10.0.2.2:8080/app-api-publicaciones/api/publicacion/codigopostal/obtener"
+    val eliminarPerfilURL = "http://10.0.2.2:8080/app-api-identidad/api/identidad/usuario/eliminar"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,17 +36,34 @@ class ProfileActivity : AppCompatActivity() {
         getProfile(getToken(), editName, editCp,editEmail)
         getCodigosPostales(getToken())
 
-        var arraylist = ArrayList<Publicacion>();
-        arraylist.add(Publicacion("Jose Manuel Velazques","Hace 5 horas","94285","Bache","Más de una semana sin agua en las unidad CTM Culhuacan Zona VI Coyoacan, Calle Manuela Cañizares  y mas texto de pruebas...","",true))
-        var mListView = findViewById<ListView>(R.id.listView)
-        val publicacionAdapter: PublicacionAdapter = PublicacionAdapter(applicationContext,arraylist)
-        mListView.adapter = publicacionAdapter
-
         btnCloseSesion.setOnClickListener{
             cerrarSesion(getToken())
         }
         btnUpdate.setOnClickListener{
             updateProfile(getToken(), editName, editCp,editEmail)
+        }
+
+        var arraylist = ArrayList<Publicacion>();
+        arraylist.add(Publicacion("Jose Manuel Velazques","Hace 5 horas","94285","Bache","Más de una semana sin agua en las unidad CTM Culhuacan Zona VI Coyoacan, Calle Manuela Cañizares  y mas texto de pruebas...","",true))
+        //arraylist = getPublicaciones(getToken())
+        var mListView = findViewById<ListView>(R.id.listView)
+        val publicacionAdapter: PublicacionAdapter = PublicacionAdapter(applicationContext,arraylist)
+        mListView.adapter = publicacionAdapter
+
+        //Confirmacion de eliminicacion de cuenta
+        val btnDelete = findViewById(R.id.btnDelete) as Button
+        btnDelete.setOnClickListener {
+            val builder = AlertDialog.Builder(this@ProfileActivity)
+            builder.setMessage("¿Esta seguro que desea eliminar su cuenta?")
+                .setCancelable(false)
+                .setPositiveButton("SI") { dialog, id ->
+                    deleteAccount(getToken())
+                }
+                .setNegativeButton("No") { dialog, id ->
+                    dialog.dismiss()
+                }
+            val alert = builder.create()
+            alert.show()
         }
     }
 
@@ -149,6 +168,34 @@ class ProfileActivity : AppCompatActivity() {
         queue.add(stringReq)
     }
 
+    private fun deleteAccount(token: String){
+        val queue = Volley.newRequestQueue(this@ProfileActivity)
+        val stringReq : StringRequest =
+            object : StringRequest(
+                Method.DELETE, eliminarPerfilURL,
+                Response.Listener { response ->
+                    Toast.makeText(this,"La cuenta se elimino correctamente", Toast.LENGTH_LONG).show()
+                    val changePage = Intent(this, LoginActivity::class.java)
+                    startActivity(changePage)
+                    deleteToken()
+                },
+                Response.ErrorListener { error ->
+                    Toast.makeText(this,"Error al eliminar la cuenta", Toast.LENGTH_LONG).show()
+                    val changePage = Intent(this, LoginActivity::class.java)
+                    startActivity(changePage)
+                    deleteToken()
+                    Log.e("CLOSE_SESSION","Paso2")
+                }
+            ){
+                override fun getHeaders(): MutableMap<String, String> {
+                    val headers = HashMap<String, String>()
+                    headers["SEATY-APP-TOKEN"] = token
+                    headers["Content-Type"] = "application/json"
+                    return headers
+                }
+            }
+        queue.add(stringReq)
+    }
 
     private fun cerrarSesion(token: String) {
         Log.e("Token a eliminar" , token)
