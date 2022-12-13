@@ -1,6 +1,6 @@
 package com.proyecto.app.social.utils
 
-class CodigoPostal {
+ class CodigoPostal {
     var id = 0
     var clave: String? = null
     var claveEntidadFederativa: String? = null

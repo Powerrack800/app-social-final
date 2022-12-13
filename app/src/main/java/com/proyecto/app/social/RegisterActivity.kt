@@ -11,11 +11,14 @@ import androidx.core.view.isEmpty
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.proyecto.app.social.utils.CodigoPostal
 import org.json.JSONArray
 import org.json.JSONObject
 
 class RegisterActivity : AppCompatActivity() {
     val createProfileUrl = "http://10.0.2.2:8080/app-api-identidad/api/identidad/usuario/"
+    val codigosPostalesURL = "http://10.0.2.2:8080/app-api-publicaciones/api/publicacion/codigopostal/obtener"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -106,12 +109,16 @@ class RegisterActivity : AppCompatActivity() {
                     val json = JSONObject(response)
                     val cpArrayString = json["entidad"].toString()
                     val cpArrayJson = JSONArray(cpArrayString);
-                    val codigosPostales = java.util.ArrayList<String>()
+                    val codigosPostales = java.util.ArrayList<Array<String>>()
                     for (i in 0 until cpArrayJson.length()) {
                         val item = cpArrayJson.getJSONObject(i)
-                        codigosPostales.add(item.getString("clave"))
+                        var array : Array<String>  = arrayOf(item.getInt("id").toString(),item.getString("clave") )
+                       // val cp = CodigoPostal()
+                        //cp.id = item.getInt("id")
+                       // cp.clave = item.getString("clave")
+                        codigosPostales.add(array)
                     }
-                    val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
+                    val adapter: ArrayAdapter<Array<String>> = ArrayAdapter<Array<String>>(
                         this, android.R.layout.simple_spinner_dropdown_item, codigosPostales
                     )
                     val cpSpinner = findViewById(R.id.spinner8) as Spinner
@@ -121,12 +128,12 @@ class RegisterActivity : AppCompatActivity() {
                     Log.e("GET_USER", error.networkResponse.toString())
                 }
             ){
-                override fun getHeaders(): MutableMap<String, String> {
+                /*override fun getHeaders(): MutableMap<String, String> {
                     val headers = java.util.HashMap<String, String>()
                     headers["SEATY-APP-TOKEN"] = token
                     headers["Content-Type"] = "application/json"
                     return headers
-                }
+                }*/
             }
         queue.add(stringReq)
     }
