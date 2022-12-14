@@ -4,16 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.ListView
-import android.widget.Toast
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.ViewPager
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.google.android.material.tabs.TabLayout
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -39,14 +37,55 @@ class HomeActivity : AppCompatActivity() {
             startActivity(changePage)
         }
 
-        getPublicaciones(getToken())
+        getPublicaciones(getToken(),0)
 
+        val menuFiltro = findViewById(R.id.spinner) as Spinner
+        menuFiltro.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val selectedItem = parent.getItemAtPosition(position).toString()
+                if (selectedItem.equals("Codigo postal")) {
+                    val inputEditTextField = EditText(this@HomeActivity)
+                    val dialog = AlertDialog.Builder(this@HomeActivity)
+                        .setTitle("Filtro")
+                        .setMessage("Ingresa CP")
+                        .setView(inputEditTextField)
+                        .setPositiveButton("OK") { _, _ ->
+                            val editTextInput = inputEditTextField.text.toString()
+                            if (!isNumeric(editTextInput) || editTextInput.isNullOrEmpty()) {
+                                Toast.makeText(
+                                    this@HomeActivity,
+                                    "Codigo postal no valido",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                getPublicaciones(getToken(), editTextInput.toInt());
+                            }
+                        }
+                        .setNegativeButton("Cancel", null)
+                        .create()
+                    dialog.show()
+                }
+                if (selectedItem.equals("Quitar filtro"))
+                    getPublicaciones(getToken(),0)
+                menuFiltro.setSelection(0)
+            } // to close the onItemSelected
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        })
     }
 
-    private fun getPublicaciones(token:String){
+
+    fun isNumeric(toCheck: String): Boolean {
+        return toCheck.all { char -> char.isDigit() }
+    }
+
+    private fun getPublicaciones(token:String, cp: Int){
         val queue = Volley.newRequestQueue(this@HomeActivity)
         val json = JSONObject()
-        json.put("idCodigoPostal",0)
+        var codigoPostal = 0
+        if(cp!=0)
+            codigoPostal = cp
+        json.put("idCodigoPostal",codigoPostal)
         json.put("idTipoIncidente",0)
         json.put("fechaDesde",null)
         json.put("fechaHasta",null)
@@ -59,6 +98,7 @@ class HomeActivity : AppCompatActivity() {
                     val entidad = json["entidad"].toString()
                     val publicaciones = JSONArray(entidad)
                     val publicacionList = ArrayList<Publicacion>()
+                    if(publicaciones.length() !=0){
                     for (i in 0 until publicaciones.length()) {
                         val item = publicaciones.getJSONObject(i)
                         val sdf = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -68,6 +108,9 @@ class HomeActivity : AppCompatActivity() {
                     var mListView = findViewById<ListView>(R.id.homeviewer)
                     val publicacionAdapter: PublicacionAdapter = PublicacionAdapter(this@HomeActivity,publicacionList,getToken())
                     mListView.adapter = publicacionAdapter
+                    }else{
+                        Toast.makeText(this,"No se encontraron publicaciones disponible", Toast.LENGTH_LONG).show()
+                    }
                 },
                 Response.ErrorListener { error ->
                     Log.e("UPDATE", error.networkResponse.toString())

@@ -5,6 +5,7 @@
     <string-array name="datos_spinner">
         <item>Fecha</item>
         <item>Codigo postal</item>
+        <item>Quitar filtro</item>
     </string-array>
 
     <string-array name="cp">
