@@ -43,7 +43,7 @@ class ChangePasswordActivity : AppCompatActivity() {
         val requestBody = json.toString()
         val stringReq : StringRequest =
             object : StringRequest(
-                Method.POST, loginUrl,
+                Method.PUT, passwordUrl,
                 Response.Listener { response ->
                     val json: JSONObject = JSONObject(response)
                     val entidad = json["entidad"].toString()

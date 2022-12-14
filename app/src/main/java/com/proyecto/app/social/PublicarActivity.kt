@@ -26,19 +26,22 @@ class PublicarActivity : AppCompatActivity() {
     val createPublishUrl = "http://10.0.2.2:8080/app-api-publicaciones/api/publicacion/"
     val cp: String = "94285";
     val accidente:String = "Bache";
-
+    val codigosPostales = arrayOf(90084,90085,90086,90087,90088,90089,90090,90091,90092,90093,90094,90095,90096,90097 )
+    val tiposIncidentes = arrayOf(1,2,3,4,5,6,7,8,9,10,11,12)
+    lateinit var cpSpinner:Spinner
+    lateinit var incidenteSpinner:Spinner
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_publicar)
-        getCodigosPostales(getToken())
-        getTipoIncidentes(getToken())
+
         val informacionIncidente = findViewById(R.id.txtDatos) as TextView
         val txtDescripcion = findViewById(R.id.txtDescripcion) as TextView
         val btnFoto = findViewById(R.id.btnCodigo3) as Button
-        val cpMenu = findViewById(R.id.spinner4) as Spinner
-        val cpIncidente = findViewById(R.id.spinner3) as Spinner
+        cpSpinner = findViewById(R.id.spinner4)
+        incidenteSpinner = findViewById(R.id.spinner3)
         val btnPubicar = findViewById(R.id.btnCodigo4) as Button
-
+        getCodigosPostales(getToken())
+        getTipoIncidentes(getToken())
         val str = "<a>CP:<font color='blue'>"+this.cp+"</font> Tipo de incidente:<font color='blue'>"+this.accidente+"</font></a>"
         informacionIncidente.text = Html.fromHtml(str, Html.FROM_HTML_MODE_COMPACT)
 
@@ -46,7 +49,7 @@ class PublicarActivity : AppCompatActivity() {
             tomarFoto()
         }
 
-        cpMenu.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        cpSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if (position!=0){
@@ -57,7 +60,7 @@ class PublicarActivity : AppCompatActivity() {
             }
         }
 
-        cpIncidente.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        incidenteSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 if (position!=0){
@@ -69,8 +72,8 @@ class PublicarActivity : AppCompatActivity() {
         }
 
         btnPubicar.setOnClickListener{
-            val cp = cpIncidente.selectedItemId
-            val tipoIncidente = cpMenu.selectedItemId
+            val cp = codigosPostales[cpSpinner.selectedItemId.toInt()]
+            val tipoIncidente = tiposIncidentes[incidenteSpinner.selectedItemId.toInt()]
             val descripcion = txtDescripcion.text.toString()
             val pictureName = getPictureName() + ".png"
             val image: ImageView = findViewById(R.id.imageProfile)
@@ -79,17 +82,17 @@ class PublicarActivity : AppCompatActivity() {
             bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
             val imageByte = stream.toByteArray()
             val encodedImage: String = Base64.getEncoder().encodeToString(imageByte)
-            crearPublicacion(descripcion,cp,tipoIncidente,pictureName,encodedImage)
+            crearPublicacion(descripcion,tipoIncidente,cp,pictureName,encodedImage)
         }
     }
 
-    private fun crearPublicacion(descripcion: String, tipoIncidente: Any?, cp: Any?, pictureName: String, imageByte: String) {
-        val tipoIncidenteNumber = tipoIncidente as Long
-        val cpNumber = cp as Long
-        tipoIncidenteNumber.plus(1);
-        cpNumber.plus(1);
+    private fun crearPublicacion(descripcion: String, tipoIncidente: Int, cp: Int, pictureName: String, imageByte: String) {
+       // val tipoIncidenteNumber = tipoIncidente as Long
+       // val cpNumber = cp as Long
+     //   tipoIncidenteNumber.plus(1);
+      //  cpNumber.plus(1);
 
-        createPublish(descripcion, tipoIncidente.toInt(), cp.toInt(), pictureName,imageByte)
+        createPublish(descripcion, tipoIncidente, cp, pictureName,imageByte)
     }
 
     private fun tomarFoto() {
@@ -126,7 +129,6 @@ class PublicarActivity : AppCompatActivity() {
                     val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
                         this, android.R.layout.simple_spinner_dropdown_item, codigosPostales
                     )
-                    val cpSpinner = findViewById(R.id.spinner4) as Spinner
                     cpSpinner.setAdapter(adapter)
                 },
                 Response.ErrorListener { error ->
@@ -160,8 +162,8 @@ class PublicarActivity : AppCompatActivity() {
                     val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
                         this, android.R.layout.simple_spinner_dropdown_item, codigosPostales
                     )
-                    val cpSpinner = findViewById(R.id.spinner3) as Spinner
-                    cpSpinner.setAdapter(adapter)
+
+                    incidenteSpinner.setAdapter(adapter)
                 },
                 Response.ErrorListener { error ->
                     Log.e("GET_USER", error.networkResponse.toString())

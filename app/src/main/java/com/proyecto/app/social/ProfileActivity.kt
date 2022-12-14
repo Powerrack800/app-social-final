@@ -21,7 +21,8 @@ class ProfileActivity : AppCompatActivity() {
     var profileUpdateUrl ="http://10.0.2.2:8080/app-api-identidad/api/identidad/usuario/"
     val codigosPostalesURL = "http://10.0.2.2:8080/app-api-publicaciones/api/publicacion/codigopostal/obtener"
     val eliminarPerfilURL = "http://10.0.2.2:8080/app-api-identidad/api/identidad/usuario/eliminar"
-
+    val codigosPostales = arrayOf(90084,90085,90086,90087,90088,90089,90090,90091,90092,90093,90094,90095,90096,90097 )
+    lateinit var cpSpinner:Spinner
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
@@ -31,16 +32,17 @@ class ProfileActivity : AppCompatActivity() {
         val btnCloseSesion = findViewById(R.id.btnCodigo5) as Button
         val btnUpdate = findViewById(R.id.btnCodigo3) as Button
         val editName = findViewById(R.id.editName) as EditText
-        val editCp = findViewById(R.id.spinner5) as Spinner
+        cpSpinner = findViewById(R.id.spinner5)
         val editEmail = findViewById(R.id.editEmailProfile) as EditText
-        getProfile(getToken(), editName, editCp,editEmail)
         getCodigosPostales(getToken())
+        getProfile(getToken(), editName, cpSpinner,editEmail)
+
 
         btnCloseSesion.setOnClickListener{
             cerrarSesion(getToken())
         }
         btnUpdate.setOnClickListener{
-            updateProfile(getToken(), editName, editCp,editEmail)
+            updateProfile(getToken(), editName, cpSpinner,editEmail)
         }
 
         var arraylist = ArrayList<Publicacion>();
@@ -79,9 +81,9 @@ class ProfileActivity : AppCompatActivity() {
                     val usuario: String = profileJSON["usuario"].toString()
                     val email: String = profileJSON["correo"].toString()
                     val cp: Int = profileJSON["idCodigoPostal"] as Int
-
+                    val index = codigosPostales.indexOf(cp)
                     editName?.setText(usuario)
-                    editCp?.setSelection(cp)
+                    cpSpinner.setSelection(index)
                     editEmail?.setText(email)
                     Log.e("GET_USER",response.toString())
                 },
@@ -151,7 +153,6 @@ class ProfileActivity : AppCompatActivity() {
                     val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
                         this, android.R.layout.simple_spinner_dropdown_item, codigosPostales
                     )
-                    val cpSpinner = findViewById(R.id.spinner5) as Spinner
                     cpSpinner.setAdapter(adapter)
                 },
                 Response.ErrorListener { error ->

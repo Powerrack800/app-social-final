@@ -18,7 +18,7 @@ import org.json.JSONObject
 class RegisterActivity : AppCompatActivity() {
     val createProfileUrl = "http://10.0.2.2:8080/app-api-identidad/api/identidad/usuario/"
     val codigosPostalesURL = "http://10.0.2.2:8080/app-api-publicaciones/api/publicacion/codigopostal/obtener"
-
+    val codigosPostales = arrayOf(90084,90085,90086,90087,90088,90089,90090,90091,90092,90093,90094,90095,90096,90097 )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -50,7 +50,7 @@ class RegisterActivity : AppCompatActivity() {
                 val usuarioTextView = findViewById(R.id.editEmail5) as TextView
                 var codigoSpinnerDefault:Int = 1
                 if(!codigoSpinner.isEmpty())
-                    codigoSpinnerDefault = codigoSpinner.selectedItemPosition
+                    codigoSpinnerDefault = codigosPostales[codigoSpinner.selectedItemPosition]
 
                 createUser(correoTextView.text.toString(),contraTextView.text.toString(),
                     codigoSpinnerDefault, usuarioTextView.text.toString())
@@ -109,16 +109,12 @@ class RegisterActivity : AppCompatActivity() {
                     val json = JSONObject(response)
                     val cpArrayString = json["entidad"].toString()
                     val cpArrayJson = JSONArray(cpArrayString);
-                    val codigosPostales = java.util.ArrayList<Array<String>>()
+                    val codigosPostales = java.util.ArrayList<String>()
                     for (i in 0 until cpArrayJson.length()) {
                         val item = cpArrayJson.getJSONObject(i)
-                        var array : Array<String>  = arrayOf(item.getInt("id").toString(),item.getString("clave") )
-                       // val cp = CodigoPostal()
-                        //cp.id = item.getInt("id")
-                       // cp.clave = item.getString("clave")
-                        codigosPostales.add(array)
+                        codigosPostales.add(item.getString("clave"))
                     }
-                    val adapter: ArrayAdapter<Array<String>> = ArrayAdapter<Array<String>>(
+                    val adapter: ArrayAdapter<String> = ArrayAdapter<String>(
                         this, android.R.layout.simple_spinner_dropdown_item, codigosPostales
                     )
                     val cpSpinner = findViewById(R.id.spinner8) as Spinner
