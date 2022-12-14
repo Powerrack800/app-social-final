@@ -40,22 +40,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button3"
-        android:layout_width="116dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="258dp"
-        android:layout_marginEnd="37dp"
-        android:layout_marginBottom="685dp"
-        android:background="@android:color/transparent"
-        android:gravity="center_vertical"
-        android:text="Notificaciones"
-        android:textColor="@color/blue"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
         android:id="@+id/btnChange"
         android:layout_width="184dp"
         android:layout_height="45dp"
@@ -70,23 +54,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/badge_notification_1"
-        android:layout_width="28dp"
-        android:layout_height="31dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="688dp"
-        android:background="@drawable/badge"
-        android:text="12"
-        android:textColor="#FFF"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/button3"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner

@@ -52,10 +52,14 @@ class RegisterActivity : AppCompatActivity() {
                 if(!codigoSpinner.isEmpty())
                     codigoSpinnerDefault = codigosPostales[codigoSpinner.selectedItemPosition]
 
-                createUser(correoTextView.text.toString(),contraTextView.text.toString(),
-                    codigoSpinnerDefault, usuarioTextView.text.toString())
+                if(correoTextView.text.isEmpty() || correoTextView.text == null || usuarioTextView.text.isEmpty() || usuarioTextView.text == null
+                    || contraTextView.text.isEmpty() || contraTextView.text == null){
+                    Toast.makeText(this,"Error: Rellenar todos los campos",Toast.LENGTH_SHORT).show()
+                    }else{
+                    createUser(correoTextView.text.toString(),contraTextView.text.toString(),
+                        codigoSpinnerDefault, usuarioTextView.text.toString())
+                }
                 }else{
-
                     Toast.makeText(this,"Debe aceptar los terminos y condiciones", Toast.LENGTH_LONG).show()
                 }
 

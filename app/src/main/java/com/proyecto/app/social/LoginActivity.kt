@@ -40,7 +40,11 @@ class LoginActivity : AppCompatActivity() {
         }
 
         loginBtn.setOnClickListener{
-            login(userTxt.text.toString(), passwordTxt.text.toString())
+            if(userTxt.text.toString().isEmpty() || userTxt.text == null || passwordTxt.text.toString().isEmpty() || passwordTxt.text == null)
+                Toast.makeText(this,"Error: Ingresar usuario y contraseña",Toast.LENGTH_SHORT).show()
+            else
+                login(userTxt.text.toString(), passwordTxt.text.toString())
+
         }
 
         register.setOnClickListener{

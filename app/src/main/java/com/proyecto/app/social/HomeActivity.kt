@@ -1,29 +1,31 @@
 package com.proyecto.app.social
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.ListView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.google.android.material.tabs.TabLayout
+import org.json.JSONArray
+import org.json.JSONObject
 
 
 class HomeActivity : AppCompatActivity() {
-    lateinit var tabLayout: TabLayout
-    lateinit var viewPager: ViewPager
+
+    val getPublicacionesUsuario = "http://10.0.2.2:8080/app-api-publicaciones/api/publicacion/obtener"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-
-
-        val btnNotification = findViewById(R.id.button3) as Button
-        btnNotification.setOnClickListener{
-            val changePage = Intent(this, NotificationsActivity::class.java)
-            startActivity(changePage)
-        }
 
         val btnProfile = findViewById(R.id.button2) as Button
         btnProfile.setOnClickListener{
@@ -37,11 +39,58 @@ class HomeActivity : AppCompatActivity() {
             startActivity(changePage)
         }
 
-        var arraylist = ArrayList<Publicacion>();
-        arraylist.add(Publicacion("Jose Manuel Velazques","Hace 5 horas","94285","Bache","Más de una semana sin agua en las unidad CTM Culhuacan Zona VI Coyoacan, Calle Manuela Cañizares  y mas texto de pruebas...","",false))
-        var mListView = findViewById<ListView>(R.id.homeviewer)
-        val publicacionAdapter: PublicacionAdapter = PublicacionAdapter(applicationContext,arraylist)
-        mListView.adapter = publicacionAdapter
+        getPublicaciones(getToken())
 
+    }
+
+    private fun getPublicaciones(token:String){
+        val queue = Volley.newRequestQueue(this@HomeActivity)
+        val json = JSONObject()
+        json.put("idCodigoPostal",0)
+        json.put("idTipoIncidente",0)
+        json.put("fechaDesde",null)
+        json.put("fechaHasta",null)
+        val requestBody = json.toString()
+        val stringReq : StringRequest =
+            object : StringRequest(
+                Method.POST, getPublicacionesUsuario,
+                Response.Listener { response ->
+                    val json = JSONObject(response)
+                    val entidad = json["entidad"].toString()
+                    val publicaciones = JSONArray(entidad)
+                    val publicacionList = ArrayList<Publicacion>()
+                    for (i in 0 until publicaciones.length()) {
+                        val item = publicaciones.getJSONObject(i)
+                        val sdf = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                        val date = java.util.Date(item.getLong("fechaPublicacion"))
+                        publicacionList.add(Publicacion(item.getString("usuario"),sdf.format(date),item.getString("codigoPostal"),item.getString("tipoIncidente"),item.getString("descripcion"),item.getJSONObject("imagen").getString("contenido"),true, item.getLong("id")))
+                    }
+                    var mListView = findViewById<ListView>(R.id.homeviewer)
+                    val publicacionAdapter: PublicacionAdapter = PublicacionAdapter(this@HomeActivity,publicacionList,getToken())
+                    mListView.adapter = publicacionAdapter
+                },
+                Response.ErrorListener { error ->
+                    Log.e("UPDATE", error.networkResponse.toString())
+                    Toast.makeText(this,"Error al recuperar el perfil", Toast.LENGTH_LONG).show()
+                }
+            ){
+                override fun getHeaders(): MutableMap<String, String> {
+                    val headers = HashMap<String, String>()
+                    headers["SEATY-APP-TOKEN"] = token
+                    headers["Content-Type"] = "application/json"
+                    return headers
+                }
+                override fun getBody(): ByteArray {
+                    return requestBody.toByteArray()
+                }
+            }
+        queue.add(stringReq)
+    }
+
+
+    private fun getToken(): String {
+        val sharedPreference =  getSharedPreferences("CREDENCIALES", Context.MODE_PRIVATE)
+        var token: String = sharedPreference.getString("token","error").toString()
+        return token
     }
 }

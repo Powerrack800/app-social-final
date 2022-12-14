@@ -18,10 +18,13 @@ class ProfileActivity : AppCompatActivity() {
 
     var logoutUrl = "http://10.0.2.2:8080/app-api-identidad/api/identidad/sesion/cerrar"
     var profileUrl = "http://10.0.2.2:8080/app-api-identidad/api/identidad/usuario/info/obtener"
-    var profileUpdateUrl ="http://10.0.2.2:8080/app-api-identidad/api/identidad/usuario/"
+    var profileUpdateUrl ="http://10.0.2.2:8080/app-api-identidad/api/identidad/usuario/actualizar"
     val codigosPostalesURL = "http://10.0.2.2:8080/app-api-publicaciones/api/publicacion/codigopostal/obtener"
     val eliminarPerfilURL = "http://10.0.2.2:8080/app-api-identidad/api/identidad/usuario/eliminar"
+    val getPublicacionesUsuario = "http://10.0.2.2:8080/app-api-publicaciones/api/publicacion/usuario/obtener"
     val codigosPostales = arrayOf(90084,90085,90086,90087,90088,90089,90090,90091,90092,90093,90094,90095,90096,90097 )
+
+
     lateinit var cpSpinner:Spinner
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +39,7 @@ class ProfileActivity : AppCompatActivity() {
         val editEmail = findViewById(R.id.editEmailProfile) as EditText
         getCodigosPostales(getToken())
         getProfile(getToken(), editName, cpSpinner,editEmail)
-
+        getPublicaciones(getToken())
 
         btnCloseSesion.setOnClickListener{
             cerrarSesion(getToken())
@@ -44,14 +47,7 @@ class ProfileActivity : AppCompatActivity() {
         btnUpdate.setOnClickListener{
             updateProfile(getToken(), editName, cpSpinner,editEmail)
         }
-
-        var arraylist = ArrayList<Publicacion>();
-        arraylist.add(Publicacion("Jose Manuel Velazques","Hace 5 horas","94285","Bache","Más de una semana sin agua en las unidad CTM Culhuacan Zona VI Coyoacan, Calle Manuela Cañizares  y mas texto de pruebas...","",true))
-        //arraylist = getPublicaciones(getToken())
-        var mListView = findViewById<ListView>(R.id.listView)
-        val publicacionAdapter: PublicacionAdapter = PublicacionAdapter(applicationContext,arraylist)
-        mListView.adapter = publicacionAdapter
-
+        getPublicaciones(getToken())
         //Confirmacion de eliminicacion de cuenta
         val btnDelete = findViewById(R.id.btnDelete) as Button
         btnDelete.setOnClickListener {
@@ -106,7 +102,7 @@ class ProfileActivity : AppCompatActivity() {
         val json = JSONObject()
         json.put("usuario",editName.text.toString())
         json.put("correo",editEmail.text.toString())
-        json.put("idCodigoPostal",editCp.selectedItemId)
+        json.put("idCodigoPostal",codigosPostales[editCp.selectedItemId.toInt()])
         val requestBody = json.toString()
         val stringReq : StringRequest =
             object : StringRequest(
@@ -239,6 +235,50 @@ class ProfileActivity : AppCompatActivity() {
         val sharedPreference =  getSharedPreferences("CREDENCIALES", Context.MODE_PRIVATE)
         var editor = sharedPreference.edit()
         editor.clear()
+    }
+
+    private fun getPublicaciones(token: String){
+        val queue = Volley.newRequestQueue(this@ProfileActivity)
+        val json = JSONObject()
+        json.put("idCodigoPostal",0)
+        json.put("idTipoIncidente",0)
+        json.put("fechaDesde",null)
+        json.put("fechaHasta",null)
+        val requestBody = json.toString()
+        val stringReq : StringRequest =
+            object : StringRequest(
+                Method.POST, getPublicacionesUsuario,
+                Response.Listener { response ->
+                    val json = JSONObject(response)
+                    val entidad = json["entidad"].toString()
+                    val publicaciones = JSONArray(entidad)
+                    val publicacionList = ArrayList<Publicacion>()
+                    for (i in 0 until publicaciones.length()) {
+                        val item = publicaciones.getJSONObject(i)
+                        val sdf = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                        val date = java.util.Date(item.getLong("fechaPublicacion"))
+                        publicacionList.add(Publicacion(item.getString("usuario"),sdf.format(date),item.getString("codigoPostal"),item.getString("tipoIncidente"),item.getString("descripcion"),item.getJSONObject("imagen").getString("contenido"),true, item.getLong("id")))
+                    }
+                    var mListView = findViewById<ListView>(R.id.listView)
+                    val publicacionAdapter: PublicacionAdapter = PublicacionAdapter(this@ProfileActivity,publicacionList,getToken())
+                    mListView.adapter = publicacionAdapter
+                },
+                Response.ErrorListener { error ->
+                    Log.e("UPDATE", error.networkResponse.toString())
+                    Toast.makeText(this,"Error al recuperar el perfil", Toast.LENGTH_LONG).show()
+                }
+            ){
+                override fun getHeaders(): MutableMap<String, String> {
+                    val headers = HashMap<String, String>()
+                    headers["SEATY-APP-TOKEN"] = token
+                    headers["Content-Type"] = "application/json"
+                    return headers
+                }
+                override fun getBody(): ByteArray {
+                    return requestBody.toByteArray()
+                }
+            }
+        queue.add(stringReq)
     }
 
 }

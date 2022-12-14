@@ -28,8 +28,12 @@ class ChangePasswordActivity : AppCompatActivity() {
         val btnChange = findViewById(R.id.btnChange) as Button
 
         btnChange.setOnClickListener{
-            changePassword(userName.text.toString(),passwordActual.text.toString(),
-                passwordNew.text.toString())
+            if(userName.text.isEmpty() || userName.text == null || passwordActual.text.isEmpty() || passwordActual.text == null
+                || passwordNew.text.isEmpty() || passwordNew.text == null)
+                Toast.makeText(this,"Error: Debes rellenar todos los campos", Toast.LENGTH_LONG).show()
+                else
+                changePassword(userName.text.toString(),passwordActual.text.toString(),
+                    passwordNew.text.toString())
         }
     }
 

@@ -186,7 +186,6 @@ class PublicarActivity : AppCompatActivity() {
         json.put("idTipoIncidente",tipoIncidente)
         json.put("descripcion",descripcion)
         val imageJson = JSONObject()
-        imageJson.put("nombre",pictureName)
         imageJson.put("contenido",imageByte)
         json.put("imagen",imageJson)
         val requestBody = json.toString()
