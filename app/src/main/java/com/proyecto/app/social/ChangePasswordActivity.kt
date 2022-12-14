@@ -45,18 +45,20 @@ class ChangePasswordActivity : AppCompatActivity() {
         json.put("usuario",username)
         json.put("contrasenia",password)
         val requestBody = json.toString()
+        Log.e("Contrasenia",requestBody.toString())
         val stringReq : StringRequest =
             object : StringRequest(
-                Method.PUT, passwordUrl,
+                Method.POST, loginUrl,
                 Response.Listener { response ->
                     val json: JSONObject = JSONObject(response)
                     val entidad = json["entidad"].toString()
                     token = entidad
-                    Log.e("Primera iteracion",token)
+                    Log.e("Primera iteracion*",token)
                     //Actualizar contraseña
                     updatePassword(token, passwordNew)
                 },
                 Response.ErrorListener { error ->
+                    Log.e("Segunda iteracion*",token)
                     Toast.makeText(this,"No se pudo actualizar contraseña", Toast.LENGTH_LONG).show()
                 }
             ) {
